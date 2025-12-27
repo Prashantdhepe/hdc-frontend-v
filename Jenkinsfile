@@ -1,26 +1,32 @@
 pipeline {
     agent any
 
+    environment {
+        NODE_ENV = 'production'
+    }
+
     stages {
-        stage('Install Node') {
+
+        stage('Install Node Dependencies') {
             steps {
-                sh 'node -v || true'
+                sh 'npm ci'
             }
         }
 
-        stage('Install Dependencies') {
-            steps {
-                sh 'npm install'
-            }
-        }
-
-        stage('Build') {
+        stage('Build Frontend') {
             steps {
                 sh 'npm run build'
             }
         }
+
+    }
+
+    post {
+        failure {
+            echo '❌ Frontend CI failed'
+        }
+        success {
+            echo '✅ Frontend CI passed'
+        }
     }
 }
-
-
-
