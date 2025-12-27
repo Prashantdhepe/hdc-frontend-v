@@ -33,7 +33,7 @@ pipeline {
 
         stage('Build Frontend') {
             steps {
-                sh 'npx vite build'
+                sh 'npm run build'
             }
         }
     }
