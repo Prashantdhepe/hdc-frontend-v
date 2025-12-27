@@ -5,7 +5,25 @@ pipeline {
         NODE_ENV = 'production'
     }
 
+    options {
+        timestamps()
+        timeout(time: 20, unit: 'MINUTES')
+    }
+
     stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Verify Node') {
+            steps {
+                sh 'node -v'
+                sh 'npm -v'
+            }
+        }
 
         stage('Install Node Dependencies') {
             steps {
@@ -15,18 +33,20 @@ pipeline {
 
         stage('Build Frontend') {
             steps {
-                sh 'npm run build'
+                sh 'npx vite build'
             }
         }
-
     }
 
     post {
+        success {
+            echo '✅ Frontend CI passed'
+        }
         failure {
             echo '❌ Frontend CI failed'
         }
-        success {
-            echo '✅ Frontend CI passed'
+        always {
+            cleanWs()
         }
     }
 }
