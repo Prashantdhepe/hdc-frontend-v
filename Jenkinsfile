@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        NODE_ENV = 'production'
-    }
-
     options {
         timestamps()
         timeout(time: 20, unit: 'MINUTES')
