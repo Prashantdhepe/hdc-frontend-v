@@ -47,16 +47,72 @@
 //     }
 // }
 
+// pipeline {
+//     agent any
+
+//     options {
+//         timestamps()
+//         timeout(time: 20, unit: 'MINUTES')
+//     }
+
+//     environment {
+//         APP_NAME = 'hdc-frontend'
+//         DEPLOY_DIR = '/var/www/hdc/Frontend'
+//     }
+
+//     stages {
+
+//         stage('Checkout') {
+//             steps {
+//                 checkout scm
+//             }
+//         }
+
+//         stage('Verify Node') {
+//             steps {
+//                 sh 'node -v'
+//                 sh 'npm -v'
+//             }
+//         }
+
+//         stage('Install Node Dependencies') {
+//             steps {
+//                 sh 'npm ci'
+//             }
+//         }
+
+//         stage('Build Frontend') {
+//             steps {
+//                 sh 'npm run build'
+//             }
+//         }
+
+//         stage('Deploy Frontend') {
+//             steps {
+//                 sh '''
+//                     rsync -av --delete dist/ $DEPLOY_DIR/
+//                 '''
+//             }
+//         }
+//     }
+
+//     post {
+//         success {
+//             echo '✅ Frontend CI/CD passed and deployed successfully'
+//         }
+//         failure {
+//             echo '❌ Frontend CI/CD failed'
+//         }
+//         always {
+//             cleanWs()
+//         }
+//     }
+// }//this file for when there is no docker use 
 pipeline {
     agent any
 
-    options {
-        timestamps()
-        timeout(time: 20, unit: 'MINUTES')
-    }
-
     environment {
-        DEPLOY_DIR = '/var/www/hdc/Frontend'
+        APP_NAME = "hdc-frontend"
     }
 
     stages {
@@ -67,43 +123,23 @@ pipeline {
             }
         }
 
-        stage('Verify Node') {
-            steps {
-                sh 'node -v'
-                sh 'npm -v'
-            }
-        }
-
-        stage('Install Node Dependencies') {
-            steps {
-                sh 'npm ci'
-            }
-        }
-
-        stage('Build Frontend') {
-            steps {
-                sh 'npm run build'
-            }
-        }
-
-        stage('Deploy Frontend') {
+        stage('Build Frontend Image') {
             steps {
                 sh '''
-                    rsync -av --delete dist/ $DEPLOY_DIR/
+                  docker build -t hdc-frontend:latest .
                 '''
             }
         }
+
     }
 
     post {
         success {
-            echo '✅ Frontend CI/CD passed and deployed successfully'
+            echo "✅ Frontend image built successfully"
         }
         failure {
-            echo '❌ Frontend CI/CD failed'
-        }
-        always {
-            cleanWs()
+            echo "❌ Frontend build failed"
         }
     }
 }
+
