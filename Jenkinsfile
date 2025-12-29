@@ -127,7 +127,7 @@ pipeline {
         stage('Build Frontend Image') {
             steps {
                 sh '''
-                  docker build -t hdc-frontend:latest .
+                  docker build -t ${APP_NAME}:latest -f Frontend/Dockerfile Frontend
                 '''
             }
         }
