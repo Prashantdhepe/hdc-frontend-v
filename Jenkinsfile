@@ -127,14 +127,7 @@ pipeline {
         stage('Build Frontend Image') {
             steps {
                 sh '''
-                  if [ -f Frontend/Dockerfile ]; then
-                    docker build -t ${APP_NAME}:latest -f Frontend/Dockerfile Frontend
-                  elif [ -f Dockerfile ]; then
-                    docker build -t ${APP_NAME}:latest .
-                  else
-                    echo "No Dockerfile found in repository root or Frontend/"
-                    exit 1
-                  fi
+                  docker build -t hdc-frontend:latest .
                 '''
             }
         }
@@ -150,4 +143,6 @@ pipeline {
         }
     }
 }
+
+
 
