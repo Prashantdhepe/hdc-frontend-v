@@ -5,7 +5,7 @@
         <div class="row">
           <div class="col-lg-6">
             <div class="cms-about-text pt-top">
-              <h3 class="title-hd">Why <span>ERA </span> Schools</h3>
+              <h3 class="title-hd">Why <span>HDC </span> Schools</h3>
               <p>The students of ERA School are encouraged to develop the habits of mind in a joyful learning experience. To that end, school offers a broad, rich and challenging curriculum.</p>
               <router-link to="/" title="Our Journey">Our Journey</router-link>
             </div><!--cms-about-text end-->

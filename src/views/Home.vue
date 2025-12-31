@@ -4,7 +4,7 @@
     <div class="fixed-bg bg1"></div>
     <div class="container">
       <div class="descp-sec">
-        <h3>Welcome to the <span>‘ERA School’</span> </h3>
+        <h3>Welcome to the <span>‘HDC School’</span> </h3>
       </div><!--descp-sec end-->
     </div>
   </section>

@@ -2,7 +2,7 @@
   <section class="block3">
     <div class="container">
       <div class="heading clr">
-        <h3>ERA Blog & News</h3>
+        <h3>HDC Blog & News</h3>
       </div><!--heading end-->
       <div class="blog-posts">
         <div class="row">
