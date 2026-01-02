@@ -17,8 +17,8 @@
             </li>
           </ul><!--social-links end-->
           <ul class="contact-add">
-            <li><a href="mailto:erasumthanasmm@gmail.com"><span>erasumthanasmm@gmail.com</span></a></li>
-            <li><a href="tel:+91-9075527270"><span>Call Us: +91-907-552-7270</span></a></li>
+            <li><a href="mailto:erasumthanasmm@gmail.com"><span>hdc@gmail.com</span></a></li>
+            <li><a href="tel:+91-9075527270"><span>Call Us: +91-878-825-3421</span></a></li>
           </ul>
         </div><!--top-left end-->
         <div class="top-right">
