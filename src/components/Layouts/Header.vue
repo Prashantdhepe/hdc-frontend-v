@@ -10,7 +10,7 @@
               <i class="fa fa-facebook"></i></a>
             </li>
             <li>
-              <a href="https://www.linkedin.com/in/erasumthana/"
+              <a href="https://www.linkedin.com/in/hdc/"
                    title="Linked In"
                    target="_blank">
               <i class="fa fa-linkedin"></i></a>
@@ -18,7 +18,7 @@
           </ul>
           <!--social-links end-->
           <ul class="contact-add">
-            <li><a href="mailto:hdc@gmail.com"><span>hdc@gmail.com</span></a></li>
+            <li><a href="mailto:hdc@gmail.com"><span>hdcSchool@gmail.com</span></a></li>
             <li><a href="tel:+91-8788253421"><span>Call Us: +91-878-825-3421</span></a></li>
           </ul>
         </div>
@@ -35,7 +35,7 @@
     <div class="bottom-header">
       <div class="container">
         <div class="logo">
-          <a href="/" title="ERA International Sumthana, Nagpur"><img src="/assets/images/logo-updated.png" alt="" style="height: 75px;"></a>
+          <a href="/" title="HDC International, Nagpur"><img src="/assets/images/logo-updated.png" alt="" style="height: 75px;"></a>
         </div><!--logo end-->
         <nav>
           <Menus />
