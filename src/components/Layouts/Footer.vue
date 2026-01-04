@@ -76,7 +76,7 @@
           </div>
           <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 text-center-xs text-center-sm text-right">
             <aside id="block-11" class="widget widget_block widget_text">
-              <p class="text-white"><strong>Proudly Developed By <a rel="noreferrer noopener" href="https://www.meritest.in/" target="_blank">Meritest Solutions Pvt. Ltd</a>.</strong></p>
+              <p class="text-white"><strong>Proudly Developed By <a rel="noreferrer noopener" href="#" target="_blank">Prashant Dhepe</a>.</strong></p>
             </aside>
           </div>
         </div>
