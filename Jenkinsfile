@@ -94,6 +94,7 @@ pipeline {
     environment {
         IMAGE_NAME = "prashantdhepe/hdc-frontend"
         DOCKER_CREDS = credentials('dockerhub_creds')
+        DOCKER_BUILDKIT = "1"
     }
 
     stages {
