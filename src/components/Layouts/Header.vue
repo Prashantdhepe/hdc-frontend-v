@@ -15,12 +15,14 @@
                    target="_blank">
               <i class="fa fa-linkedin"></i></a>
             </li>
-          </ul><!--social-links end-->
+          </ul>
+          <!--social-links end-->
           <ul class="contact-add">
             <li><a href="mailto:hdc@gmail.com"><span>hdc@gmail.com</span></a></li>
             <li><a href="tel:+91-8788253421"><span>Call Us: +91-878-825-3421</span></a></li>
           </ul>
-        </div><!--top-left end-->
+        </div>
+        <!--top-left end-->
         <div class="top-right">
           <div class="cart-opt">
             <a href="#" title=""><i class="fa fa-bullhorn"></i>Announcements</a>
