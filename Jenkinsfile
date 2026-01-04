@@ -98,11 +98,11 @@ pipeline {
 
     stages {
 
-        stage('Checkout Code') {
-            steps {
-                checkout scm
-            }
-        }
+        // stage('Checkout Code') {
+        //     steps {
+        //         checkout scm
+        //     }
+        // }
 
         stage('Build Docker Image') {
             steps {

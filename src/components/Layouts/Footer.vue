@@ -6,7 +6,7 @@
           <div class="col-lg-3 col-md-6 col-sm-12 col-12">
             <div class="widget widget-about">
               <h3 class="widget-title">About Us</h3>
-              <p>ERA strives to surpass through its two-fold purpose of achieving academic and moral excellence. Education is basically to prepare a human being to be good and become a good citizen of the world. We are highly focused on the overall development to the country. We believe that we are not just educating students but we are giving a new generation to INDIA.</p>
+              <p>HDC strives to surpass through its two-fold purpose of achieving academic and moral excellence. Education is basically to prepare a human being to be good and become a good citizen of the world. We are highly focused on the overall development to the country. We believe that we are not just educating students but we are giving a new generation to INDIA.</p>
               <img src="/assets/images/logo2.png" alt="">
             </div><!--widget-about end-->
           </div>
@@ -71,7 +71,7 @@
         <div class="row">
           <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 text-center-xs text-center-sm">
             <aside id="block-12" class="widget widget_block widget_text">
-              <p><strong><span class="text-white">Copyright 2022 ERA School Sumthana, Nagpur</span></strong></p>
+              <p><strong><span class="text-white">Copyright 2022 HDC School Sumthana, Nagpur</span></strong></p>
             </aside>
           </div>
           <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 text-center-xs text-center-sm text-right">
