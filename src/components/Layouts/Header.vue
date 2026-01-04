@@ -30,7 +30,8 @@
         </div>
         <!--top-right end-->
       </div>
-    </div><!--top-bar end-->
+    </div>
+    <!--top-bar end-->
     <div class="bottom-header">
       <div class="container">
         <div class="logo">
