@@ -71,7 +71,7 @@
         <div class="row">
           <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 text-center-xs text-center-sm">
             <aside id="block-12" class="widget widget_block widget_text">
-              <p><strong><span class="text-white">Copyright 2022 HDC School Sumthana, Nagpur</span></strong></p>
+              <p><strong><span class="text-white">Copyright 2022 HDC School, AKola</span></strong></p>
             </aside>
           </div>
           <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 text-center-xs text-center-sm text-right">
