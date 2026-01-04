@@ -27,7 +27,8 @@
           <div class="cart-opt">
             <a href="#" title=""><i class="fa fa-bullhorn"></i>Announcements</a>
           </div><!--cart-opt end-->
-        </div><!--top-right end-->
+        </div>
+        <!--top-right end-->
       </div>
     </div><!--top-bar end-->
     <div class="bottom-header">
