@@ -834,7 +834,7 @@ header.hp2 .cart-opt a {
 	float: left;
 	width: 100%;
 }
-.sbg1 {
+/* .sbg1 {
 	background-image: url(../images/sbg1.png);
 	border-color: #0f9fbc;
 }
@@ -845,6 +845,20 @@ header.hp2 .cart-opt a {
 .sbg3 {
 	background-image: url(../images/sbg3.png);
 	border-color: #c05631;
+} */
+.sbg1 {
+    background-image: url("/assets/images/sbg1.png");
+    border-color: #0f9fbc;
+}
+
+.sbg2 {
+    background-image: url("/assets/images/sbg2.png");
+    border-color: #ba2b6f;
+}
+
+.sbg3 {
+    background-image: url("/assets/images/sbg3.png");
+    border-color: #c05631;
 }
 .service-info {
 	float: left;
