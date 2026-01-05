@@ -4,8 +4,6 @@ import router from './router'
 import stores from './stores'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
-import './assets/css/style.css'
-import './assets/css/custom.css'
 
 const app = createApp(App)
 
