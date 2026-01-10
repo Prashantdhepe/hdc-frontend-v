@@ -18,7 +18,7 @@
           </ul>
           <!--social-links end-->
           <ul class="contact-add">
-            <li><a href="mailto:hdc@gmail.com"><span>hdcSchool@gmail.com</span></a></li>
+            <li><a href="mailto:hdc@gmail.com"><span>hdcschool@gmail.com</span></a></li>
             <li><a href="tel:+91-8788253421"><span>Call Us: +91-878-825-3421</span></a></li>
           </ul>
         </div>
