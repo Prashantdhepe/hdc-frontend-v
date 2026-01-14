@@ -41,7 +41,13 @@ const getImageUrl = (directory) => {
   if (!directory) {
     return "http://via.placeholder.com/369x375"; 
   }
-  return `${import.meta.env.VITE_API_BASE_URL}/storage/${directory}`; 
+//   return `${import.meta.env.VITE_API_BASE_URL}/storage/${directory}`; 
+    if (import.meta.env.DEV) {
+    return `${import.meta.env.VITE_API_BASE_URL}/storage/${directory}`;
+  }
+
+  // Production (EC2 + S3)
+  return `${import.meta.env.VITE_S3_BASE_URL}/${directory}`;
 };
 onMounted(() =>{
     fetchBanner();
