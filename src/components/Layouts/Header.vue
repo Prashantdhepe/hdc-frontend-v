@@ -35,7 +35,7 @@
     <div class="bottom-header">
       <div class="container">
         <div class="logo">
-          <a href="/" title="HDC International, Nagpur"><img src="/assets/images/logo-updated.png" alt="" style="height: 75px;"></a>
+          <a href="/" title="HDC International, Nagpur"><img src="/assets/images/hdc_logo.jpeg" alt="" style="height: 75px;"></a>
         </div><!--logo end-->
         <nav>
           <Menus />

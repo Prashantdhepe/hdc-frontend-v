@@ -7,7 +7,7 @@
             <div class="widget widget-about">
               <h3 class="widget-title">About Us</h3>
               <p>HDC strives to surpass through its two-fold purpose of achieving academic and moral excellence. Education is basically to prepare a human being to be good and become a good citizen of the world. We are highly focused on the overall development to the country. We believe that we are not just educating students but we are giving a new generation to INDIA.</p>
-              <img src="/assets/images/logo2.png" alt="">
+              <img src="/assets/images/hdc_logo.jpeg" alt="" style="height: 75px; margin-bottom: 25px" >
             </div><!--widget-about end-->
           </div>
           <div class="col-lg-3 col-md-6 col-sm-12 col-12">
@@ -76,7 +76,7 @@
           </div>
           <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 text-center-xs text-center-sm text-right">
             <aside id="block-11" class="widget widget_block widget_text">
-              <p class="text-white"><strong>Proudly Developed By <a rel="noreferrer noopener" href="#" target="_blank">Prashant Dhepe</a>.</strong></p>
+              <p class="text-white"><strong>Proudly Developed By <a rel="noreferrer noopener" href="#" target="_blank">Prashant</a>.</strong></p>
             </aside>
           </div>
         </div>

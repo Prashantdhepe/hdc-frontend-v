@@ -1,5 +1,5 @@
 <template>
-  <div class="banner"></div>
+<Banner />
   <section class="block2">
     <div class="fixed-bg bg1"></div>
     <div class="container">
@@ -42,6 +42,7 @@ import OurClass from "@/components/Home/OurClass.vue";
 import YourChildren from "@/components/Home/YourChildren.vue";
 import Gallery from "@/components/Home/Gallery.vue";
 import Blogs from "@/components/Home/Blogs.vue";
+import Banner from "@/components/Home/Banner.vue";
 
 </script>
 
