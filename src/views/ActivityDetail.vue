@@ -1,0 +1,425 @@
+<script setup>
+import { useRoute } from "vue-router";
+import { watch, onMounted, ref } from "vue";
+import axiosClient from "@/axios";
+
+const route = useRoute();
+const content = ref("");
+const title = ref("");
+const post = ref(null);
+const school = ref("");
+const isLoading = ref(true);
+const allPosts = ref([]);
+const selectedImage = ref(null);
+const range = ref({ start: null, end: null });
+const events = ref([]);
+const calendarAttributes = ref([]);
+
+const mode = ref('date');
+const rules = ref([
+  {
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+    milliseconds: 0,
+  },
+  {
+    hours: 23,
+    minutes: 59,
+    seconds: 59,
+    milliseconds: 999,
+  },
+]);
+
+const fetchEvents = async () => {
+  try {
+    const response = await axiosClient.get("/events/recent");
+    events.value = response.data.data;
+
+    if (events.value.length > 0) {
+      const startDate = new Date(Math.min(...events.value.map(event => new Date(event.start_date))));
+      const endDate = new Date(Math.max(...events.value.map(event => new Date(event.end_date))));
+      range.value.start = startDate;
+      range.value.end = endDate;
+    }
+    calendarAttributes.value = events.value.map(event => ({
+      key: event.id,
+      highlight: 'blue',
+      dates: { start: new Date(event.start_date), end: new Date(event.end_date) },
+      popover: {
+        label: event.title || 'Event',
+      },
+    }));
+
+  } catch (error) {
+    console.error("Error fetching events:", error);
+  }
+};
+
+
+onMounted(async () => {
+  await fetchEvents();
+  await fetch();
+  if (post.value?.user_id) {
+    post.value.user = { name: await fetchUser(post.value.user_id) };
+  }
+});
+
+watch(
+  () => route.params.slug,
+  (newVal, oldVal) => {
+    if (newVal !== oldVal) {
+      fetch();
+    }
+  }
+);
+
+const fetchUser = async (userId) => {
+  try {
+    const response = await axiosClient.get(`/users/${userId}`);
+    return response.data.name;
+  } catch (e) {
+    console.error("Error fetching user details:", e);
+    return "Unknown User";
+  }
+};
+
+const fetch = async () => {
+  school.value = route.params.school;
+  const slug = route.params.slug;
+
+  try {
+    isLoading.value = true;
+    const response = await axiosClient.get(`/activities/${school.value}`);
+    const posts = response.data.posts;
+
+    post.value = posts.find((p) => p.slug === slug);
+
+    if (post.value) {
+      title.value = post.value.title;
+      content.value = post.value.content;
+
+      if (typeof post.value.media_galleries === "string") {
+        post.value.media_galleries = JSON.parse(post.value.media_galleries);
+      }
+
+      post.value.media_galleries = post.value.media_galleries.map((image) => {
+        return processImageUrl(image);
+      });
+    } else {
+      console.error("Post not found");
+    }
+    allPosts.value = posts;
+    title.value = response.data.school;
+  } catch (e) {
+    console.error("Error fetching activity details:", e);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const getImageUrl = (image) => {
+  return image;
+};
+
+const processImageUrl = (imagePath) => {
+  if (!imagePath) {
+    return "http://via.placeholder.com/369x375";
+  }
+  if (import.meta.env.DEV) {
+    return `${import.meta.env.VITE_API_BASE_URL}/storage/${imagePath}`;
+  }
+  // Production (EC2 + S3)
+  return `${import.meta.env.VITE_S3_BASE_URL}/${imagePath}`;
+};
+
+const openImageDialog = (image) => {
+  selectedImage.value = image;
+};
+const closeImageDialog = () => {
+  selectedImage.value = null;
+};
+</script>
+
+<template>
+  <div>
+    <section class="pager-sec">
+      <div class="container">
+        <div class="pager-pag">
+          <h3>Activity Details</h3>
+          <h4>{{ title }}</h4> 
+        </div>
+      </div>
+    </section>
+
+    <section class="block6">
+        <div class="container">
+            <div class="blog-post-page">
+                <div class="row">
+                    <div class="col-lg-9">
+                        <div class="posts-page">
+
+                            <div v-if="isLoading" class="loading-message">
+                                Loading activity details...
+                            </div>    
+                            <div v-else-if="post" class="post-page">
+                                <div class="post-blog">
+                                    <h3 class="post-title"><i class="fa fa-thumb-tack"></i>{{ post.title }}</h3>
+                                        <span class="post-date"><i class="fa fa-picture-o"></i>{{ post.published_at }}</span>
+                                    <div class="blog-post-info">
+                                        <ul class="post-tg">
+                                            <li class="ad-author">
+                                                <span>By</span>
+                                                <a href="#" title="user-name" class="ad-name m-1">{{ post.user?.name || 'Unknown User' }}</a>
+                                            </li>
+                                            <li>
+                                                <i class="fa fa-sitemap"></i>
+                                                <a href="#" title="">{{ title }} Activities</a>
+                                                <!-- <a href="#" title="">News</a> -->
+                                            </li>
+                                        </ul>
+                                        <p v-html="post.short_description"></p>
+                                        <div v-if="post.media_galleries && post.media_galleries.length" class="post-gallery">
+                                          <div v-for="(image, index) in post.media_galleries" :key="index" class="post-img">
+                                            <img :src="getImageUrl(image)" alt="Activity Image" @click="openImageDialog(image)" />
+                                          </div>
+                                        </div>
+                                        <!-- <a href="#" title="">Continue Reading</a> -->
+                                    </div><!--blog-post-info end-->
+                                </div><!--post-blog end-->
+
+                            </div>
+                            <div v-else class="error-message">
+                                Activity not found.
+                            </div>
+                        </div><!--posts-page end-->
+                    </div>
+                    
+                    <div class="col-lg-3">
+                        <div class="right-sidebar">
+                            <div class="widget widget-text">
+                                <h3 class="widget-title">{{ title }} Activities</h3>
+                                <ul>
+                                    <li v-for="(activity, index) in allPosts" :key="index">
+                                    <!-- <router-link class="font-bold" :to="{ name: 'ActivityDetail', params: { school: school, slug: activity.slug } }"> -->
+                                    <router-link class="widget-link" :to="{ name: 'ActivityDetail', params: { school: school, slug: activity.slug } }">
+                                        {{ activity.title }}
+                                    </router-link>
+                                    </li>
+                                </ul>
+                                
+                            </div><!--widget-text end-->
+        
+                            <div class="widget widget-categories">
+                                <h3 class="widget-title">Calendar</h3>
+                                <VDatePicker
+                                  v-model.range="range"
+                                  :mode="mode" 
+                                  :rules="rules"
+                                  :attributes="calendarAttributes"
+                                />
+                            </div>
+                            <!--widget-categories end-->
+                            <!-- <div class="widget widget-tags">
+                                <h3 class="widget-title">Tags</h3>
+                                <ul>
+                                    <li><a href="#" title="">Dance</a></li>
+                                    <li><a href="#" title="">Education</a></li>
+                                    <li><a href="#" title="">Play</a></li>
+                                    <li><a href="#" title="">Story Time</a></li>
+                                </ul>
+                            </div> -->
+                            <!--widget-tags end-->
+                            <!-- <div class="widget widget-calendar">
+                                <h3 class="widget-title">Calendar</h3>
+                                <table id="wp-calendar">
+                                    <caption>December 2017</caption>
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" title="Monday">M</th>
+                                            <th scope="col" title="Tuesday">T</th>
+                                            <th scope="col" title="Wednesday">W</th>
+                                            <th scope="col" title="Thursday">T</th>
+                                            <th scope="col" title="Friday">F</th>
+                                            <th scope="col" title="Saturday">S</th>
+                                            <th scope="col" title="Sunday">S</th>
+                                        </tr>
+                                    </thead>
+                                    <tr>
+                                        <td colspan="4" class="pad">&nbsp;</td><td>1</td><td id="today">2</td><td>3</td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td>
+                                    </tr>
+                                    <tr>
+                                        <td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td>
+                                    </tr>
+                                    <tr>
+                                        <td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td><td>24</td>
+                                    </tr>
+                                    <tr>
+                                        <td>25</td><td>26</td><td>27</td><td>28</td><td>29</td><td>30</td><td>31</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" id="prev"><a href="http://demo.cmssuperheroes.com/themeforest/wp-kindergarten/2015/05/">« May</a></td>
+                                        <td class="pad">&nbsp;</td>
+                                        <td colspan="3" id="next" class="pad">&nbsp;</td>
+                                    </tr>
+                                </table>
+                            </div> -->
+                            <!--widget-calendar end-->
+                            <!-- <div class="widget widget-posts">
+                                <h3 class="widget-title">Recent Posts</h3>
+                                <div class="blg-posts">
+                                    <div class="blg-post">
+                                        <img src="http://via.placeholder.com/50x50" alt="">
+                                        <div class="blg-info">
+                                            <h3>Story Time</h3>
+                                            <span>May 13 2016 | by <a href="#" title="">admin</a></span>
+                                            <p>Elipsis magna a terminal nulla elementum morbi elite forte maecenas...</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="blg-post">
+                                        <img src="http://via.placeholder.com/50x50" alt="">
+                                        <div class="blg-info">
+                                            <h3>Reading Lessons</h3>
+                                            <span>May 13 2016 | by <a href="#" title="">admin</a></span>
+                                            <p>Elipsis magna a terminal nulla elementum morbi elite forte maecenas...</p>
+                                        </div>
+                                    </div>
+                                    <div class="blg-post">
+                                        <img src="http://via.placeholder.com/50x50" alt="">
+                                        <div class="blg-info">
+                                            <h3>Education Through Play</h3>
+                                            <span>May 13 2016 | by <a href="#" title="">admin</a></span>
+                                            <p>Elipsis magna a terminal nulla elementum morbi elite forte maecenas...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> -->
+                            <!--widget-posts end-->
+                        </div><!--right-sidebar end-->
+                    </div>
+                
+                </div>
+            </div><!--blog_post end-->
+        </div>
+        <div v-if="selectedImage" class="image-modal">
+                  <div class="modal-overlay" @click="closeImageDialog"></div>
+                  <div class="modal-content">
+                    <span class="close-btn" @click="closeImageDialog"><i class="fa fa-window-close" aria-hidden="true"></i>
+                    </span>
+                    <img :src="selectedImage" alt="Full Image" />
+                  </div>
+                </div>
+    </section>
+    
+    
+  </div>
+</template>
+
+<style scoped>
+.loading-message,
+.error-message {
+  text-align: center;
+  padding: 20px;
+  font-size: 18px;
+  color: #666;
+}
+
+.post-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+  justify-content: center; 
+}
+
+.post-img {
+  flex: 1 1 calc(50% - 10px); 
+  max-width: calc(50% - 10px); 
+  box-sizing: border-box;
+}
+
+.post-img img {
+  width: 100%;
+  height: 300px; 
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.right-sidebar .widget-link {
+	font-size: 20px;
+	font-weight: 700;
+	text-transform: capitalize;
+	font-family: 'Dosis';
+}
+
+.widget-text ul {
+  list-style: none;
+  padding: 0;
+}
+
+.widget-text ul li {
+  margin-bottom: 10px;
+}
+
+.widget-text ul li a {
+  text-decoration: none;
+  color: #333;
+}
+
+.widget-text ul li a:hover {
+  color: #007bff;
+}
+.image-modal {
+  position: fixed;
+  top: 50px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.modal-content {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+  background: rgb(247, 242, 242);
+  padding: 5px;
+  border-radius: 1px;
+  text-align: center;
+}
+
+.modal-content img {
+  max-width: 100%;
+  max-height: 80vh;
+  border-radius: 1px;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 50px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+}
+/*  */
+.router-link {
+    font-weight: bold;
+}
+</style>

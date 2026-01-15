@@ -24,11 +24,12 @@
     <li><router-link to="/achievements" title="">Achievements</router-link></li>
     <li><a href="#" title="School Activities">Activities</a>
       <ul>
-        <li><router-link :to="{name: 'Activities', params: {school: 'play-school'}}" title="Play School">Play School</router-link></li>
-        <li><router-link :to="{name: 'Activities', params: {school: 'international-school'}}" title="International School">International School</router-link></li>
+        <li><router-link :to="{name: 'Activities', params: {school: 'hdc-kids'}}" title="Play School">Play School</router-link></li>
+        <li><router-link :to="{name: 'Activities', params: {school: 'hdc-international'}}" title="International School">International School</router-link></li>
       </ul>
     </li>
-    <li><router-link to="/announcements" title="Announcements">Announcements</router-link></li>
+    <li><router-link to="/event" title="Events">Events</router-link></li>
+    <li><router-link to="/gallery" title="Gallery">Gallery</router-link></li>
     <li><router-link to="/contact-us" title="Contact Us">Contact Us</router-link></li>
   </ul>
 </template>

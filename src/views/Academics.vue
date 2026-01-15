@@ -1,3 +1,111 @@
+<script setup>
+import { useRoute, useRouter } from "vue-router";
+import {onMounted, ref, watch} from "vue";
+import axiosClient from "@/axios";
+
+const route = useRoute();
+const content = ref("");
+const title = ref("");
+
+const range = ref({ start: null, end: null });
+const events = ref([]);
+const calendarAttributes = ref([]);
+
+const mode = ref('date');
+const rules = ref([
+  {
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+    milliseconds: 0,
+  },
+  {
+    hours: 23,
+    minutes: 59,
+    seconds: 59,
+    milliseconds: 999,
+  },
+]);
+
+const fetchEvents = async () => {
+  try {
+    const response = await axiosClient.get("/events/recent");
+    events.value = response.data.data;
+
+    if (events.value.length > 0) {
+      const startDate = new Date(Math.min(...events.value.map(event => new Date(event.start_date))));
+      const endDate = new Date(Math.max(...events.value.map(event => new Date(event.end_date))));
+      range.value.start = startDate;
+      range.value.end = endDate;
+    }
+    calendarAttributes.value = events.value.map(event => ({
+      key: event.id,
+      highlight: 'blue',
+      dates: { start: new Date(event.start_date), end: new Date(event.end_date) },
+      popover: {
+        label: event.title || 'Event',
+      },
+    }));
+
+  } catch (error) {
+    console.error("Error fetching events:", error);
+  }
+};
+
+onMounted(() => {
+  fetch();
+  fetchEvents();
+});
+watch(
+    () => route.params.slug,
+    (newVal, oldVal) => {
+      fetch();
+    }
+);
+const fetch = async () => {
+  let slug = route.params.slug;
+  console.log(slug)
+  try {
+    const response = await axiosClient.get(`/academics/${slug}`);
+    content.value = JSON.parse(JSON.stringify(response.data.data));
+    title.value = content.value[0].name;
+    content.value = content.value[0];
+  } catch (e) {
+
+  }
+}
+const getImageUrl = (mediaGalleries) => {
+  if (!mediaGalleries || mediaGalleries.length === 0) {
+    return "http://via.placeholder.com/369x375"; 
+  }
+  const mediaArray = typeof mediaGalleries === "string" ? JSON.parse(mediaGalleries) : mediaGalleries;
+
+  if (mediaArray.length > 0) {
+    const imagePath = mediaArray[0];
+    if (import.meta.env.DEV) {
+      return `${import.meta.env.VITE_API_BASE_URL}/storage/${imagePath}`;
+    }
+    // Production (EC2 + S3)
+    return `${import.meta.env.VITE_S3_BASE_URL}/${imagePath}`;
+  }
+  return "http://via.placeholder.com/369x375"; 
+};
+
+const hasImage = (mediaGalleries) => {
+  if (!mediaGalleries) return false;
+  const mediaArray = typeof mediaGalleries === "string" ? JSON.parse(mediaGalleries) : mediaGalleries;
+  return mediaArray.length > 0;
+};
+</script>
+
+<style scoped>
+.posts-page img{
+	width: 100%;
+	height: 500px;
+	margin-bottom: 10px;
+}
+</style>
+
 <template>
   <section class="pager-sec">
     <div class="container">
@@ -14,9 +122,11 @@
 						<div class="col-lg-9">
 							<div class="posts-page">
 								<div class="post-blog" v-for="(post, index) in content.posts" :key="index">              
-									<h3 class="post-title">{{ post.title }}</h3>									
+									<h3 class="post-title"><router-link :to="{name: 'Academics', params: {slug: post.slug}}" :title="post.title">{{ post.title }}</router-link></h3>									
 									<div class="blog-post-info" v-html="post.content">
-									</div><!--blog-post-info end-->
+									</div>
+									<img v-if="hasImage(post.media_galleries)" :src="getImageUrl(post.media_galleries)" alt="" class="academic-img"><!--blog-post-info end-->
+									<!-- <a href="blog-details.html" title="">Continue Reading</a> -->
 								</div><!--post-blog end-->
 							</div><!--posts-page end-->
 						</div>
@@ -26,14 +136,24 @@
 									<h3 class="widget-title">Academics</h3>
 									<ul>
 										<li><router-link :to="{name: 'Academics', params: {slug: 'rules-and-regulations'}}" title="Rules and Regulations">Rules and Regulations</router-link></li>
-                    <li><router-link :to="{name: 'Academics', params: {slug: 'news-room'}}" title="News Room">News Room</router-link></li>
-                    <li><router-link :to="{name: 'Academics', params: {slug: 'bus-routes'}}" title="Bus Routes">Bus Routes</router-link></li>
-                    <li><router-link :to="{name: 'Academics', params: {slug: 'time-tables'}}" title="Time Tables">Time Tables</router-link></li>
-                    <li><router-link :to="{name: 'Academics', params: {slug: 'school-timings'}}" title="School Timings">School Timings</router-link></li>
-                    <li><router-link :to="{name: 'Academics', params: {slug: 'mandatory-disclosures'}}" title="Mandatory Disclosures">Mandatory Disclosures</router-link></li>
+										<li><router-link :to="{name: 'Academics', params: {slug: 'news-room'}}" title="News Room">News Room</router-link></li>
+										<li><router-link :to="{name: 'Academics', params: {slug: 'bus-routes'}}" title="Bus Routes">Bus Routes</router-link></li>
+										<li><router-link :to="{name: 'Academics', params: {slug: 'time-tables'}}" title="Time Tables">Time Tables</router-link></li>
+										<li><router-link :to="{name: 'Academics', params: {slug: 'school-timings'}}" title="School Timings">School Timings</router-link></li>
+										<li><router-link :to="{name: 'Academics', params: {slug: 'mandatory-disclosures'}}" title="Mandatory Disclosures">Mandatory Disclosures</router-link></li>
 									</ul>
 								</div><!--widget-categories end-->
-								<div class="widget widget-posts">
+
+								<div class="widget widget-categories">
+									<h3 class="widget-title">Calendar</h3>
+									<VDatePicker
+										v-model.range="range"
+										:mode="mode" 
+										:rules="rules"
+										:attributes="calendarAttributes"
+									/>
+								</div>
+								<!-- <div class="widget widget-posts">
 	    							<h3 class="widget-title">Recent Announcements</h3>
 		    						<div class="blg-posts">
 		    							<div class="blg-post">
@@ -43,7 +163,7 @@
 		    									<span>May 13 2016 | by <a href="#" title="">admin</a></span>
 		    									<p>Elipsis magna a terminal nulla elementum morbi elite forte maecenas...</p>
 		    								</div>
-		    							</div><!--blg-post end-->
+		    							</div>
 		    							<div class="blg-post">
 		    								<img src="http://via.placeholder.com/50x50" alt="">
 		    								<div class="blg-info">
@@ -51,7 +171,7 @@
 		    									<span>May 13 2016 | by <a href="#" title="">admin</a></span>
 		    									<p>Elipsis magna a terminal nulla elementum morbi elite forte maecenas...</p>
 		    								</div>
-		    							</div><!--blg-post end-->
+		    							</div>
 		    							<div class="blg-post">
 		    								<img src="http://via.placeholder.com/50x50" alt="">
 		    								<div class="blg-info">
@@ -59,9 +179,10 @@
 		    									<span>May 13 2016 | by <a href="#" title="">admin</a></span>
 		    									<p>Elipsis magna a terminal nulla elementum morbi elite forte maecenas...</p>
 		    								</div>
-		    							</div><!--blg-post end-->
-		    						</div><!--blg-posts end-->
-		    					</div><!--widget-posts end-->
+		    							</div>
+		    						</div>
+		    					</div> -->
+								<!--widget-posts end-->
 							</div><!--right-sidebar end-->
 						</div>
 					</div>
@@ -69,37 +190,3 @@
 			</div>
 		</section>
 </template>
-
-<script setup>
-import { useRoute, useRouter } from "vue-router";
-import {onMounted, ref, watch} from "vue";
-import axiosClient from "@/axios";
-
-const route = useRoute();
-const content = ref("");
-const title = ref("");
-onMounted(() => {
-  fetch();
-});
-watch(
-    () => route.params.slug,
-    (newVal, oldVal) => {
-      fetch();
-    }
-);
-const fetch = async () => {
-  let slug = route.params.slug;
-  try {
-    const response = await axiosClient.get(`/academics/${slug}`);
-    content.value = JSON.parse(JSON.stringify(response.data.data));
-    title.value = content.value[0].name;
-    content.value = content.value[0];
-  } catch (e) {
-
-  }
-}
-</script>
-
-<style scoped>
-
-</style>

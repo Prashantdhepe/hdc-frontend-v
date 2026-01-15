@@ -6,7 +6,12 @@ import OurStaff from '../views/OurStaff.vue'
 import Academics from '../views/Academics.vue'
 import Achievements from '../views/Achievements.vue'
 import Activities from '../views/Activities.vue'
-import Announcements from '../views/Announcements.vue'
+import Gallery from '../views/Gallery.vue'
+import ActivityDetail from '../views/ActivityDetail.vue'
+import Announcement from '../views/Announcements.vue'
+import Event from '../views/Event.vue'
+import EventDetail from '../views/EventsDetail.vue'
+import AchievementsDetail from '../views/AchievementsDetail.vue'
 
 const routes = [
   {
@@ -35,14 +40,39 @@ const routes = [
     component: Achievements
   },
   {
+    path: '/achievements/:id',
+    name: 'AchievementsDetail',
+    component: AchievementsDetail
+  },
+  {
     path: '/activities/:school',
     name: 'Activities',
     component: Activities
+  },  
+  {
+    path: '/activity/:school/:slug',
+    name: 'ActivityDetail',
+    component: ActivityDetail
+  },
+  {
+    path: '/gallery',
+    name: 'gallery',
+    component: Gallery
+  },
+  {
+    path: '/event',
+    name: 'event',
+    component: Event
+  },
+  {
+    path: '/event/:id',
+    name: 'EventDetail',
+    component: EventDetail
   },
   {
     path: '/announcements',
     name: 'announcements',
-    component: Announcements
+    component: Announcement
   },
   {
     path: '/contact-us',

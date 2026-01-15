@@ -56,7 +56,7 @@ onMounted(() =>{
   </script>
   
   <style scoped>
-  /* .banner {
+  .banner {
     background-size: cover;
     background-position: center;
     height: 650px;
@@ -65,11 +65,11 @@ onMounted(() =>{
     justify-content: center;
     align-items: center;
     margin-top: 140px;
-  } */
-  /* @media (max-width: 576px) {
+  } 
+ @media (max-width: 576px) {
     .banner {
       height: 200px;
       margin-top: 100px;
     }
-  } */
+  }
   </style>

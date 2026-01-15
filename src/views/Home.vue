@@ -21,7 +21,7 @@
 
   <Testimonials />
 
-  <!-- <OurClass /> -->
+  <OurClass />
 
   <YourChildren />
 

@@ -25,7 +25,7 @@
         <!--top-left end-->
         <div class="top-right">
           <div class="cart-opt">
-            <a href="#" title=""><i class="fa fa-bullhorn"></i>Announcements</a>
+            <a href="/announcements" title=""><i class="fa fa-bullhorn"></i>Announcements</a>
           </div><!--cart-opt end-->
         </div>
         <!--top-right end-->
@@ -52,12 +52,13 @@
   <div class="responsive-mobile-menu">
     <Menus />
   </div><!--responsive-mobile-menu end-->
-
+<Marquee/>
 </template>
 
 <script setup>
 import { onMounted } from "vue";
 import Menus from "@/components/Layouts/Menus.vue";
+import Marquee from "@/components/Layouts/Marquee.vue";
 
 onMounted(() => {
   mobileMenusEnable();

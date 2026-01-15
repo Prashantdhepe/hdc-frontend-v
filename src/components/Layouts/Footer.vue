@@ -3,7 +3,7 @@
     <div class="container">
       <div class="footer-data">
         <div class="row">
-          <div class="col-lg-3 col-md-6 col-sm-12 col-12">
+          <div class="col-lg-5 col-md-6 col-sm-12 col-12">
             <div class="widget widget-about">
               <h3 class="widget-title">About Us</h3>
               <p>HDC strives to surpass through its two-fold purpose of achieving academic and moral excellence. Education is basically to prepare a human being to be good and become a good citizen of the world. We are highly focused on the overall development to the country. We believe that we are not just educating students but we are giving a new generation to INDIA.</p>
@@ -12,20 +12,21 @@
           </div>
           <div class="col-lg-3 col-md-6 col-sm-12 col-12">
             <div class="widget widget-links">
-              <h3 class="widget-title">Blog Categories</h3>
+              <h3 class="widget-title">Activities</h3>
               <ul>
-                <li><a href="#" title="">Meet The Team</a></li>
-                <li><a href="#" title="">Careers</a></li>
-                <li><a href="#" title="">Testimonials</a></li>
-                <li><a href="#" title="">Community Involvement</a></li>
-                <li><a href="#" title="">What We Do</a></li>
+                <li><router-link :to="{name: 'Activities', params: {school: 'hdc-kids'}}" title="Play School">Play School</router-link></li>
+                <li><router-link :to="{name: 'Activities', params: {school: 'hdc-international'}}" title="International School">International School</router-link></li>
               </ul>
             </div><!--widget-links end-->
           </div>
           <div class="col-lg-3 col-md-6 col-sm-12 col-12">
             <div class="widget widget-posts">
-              <h3 class="widget-title">Blog Posts</h3>
-              <div class="blg-posts">
+              <h3 class="widget-title">Achievements</h3>
+              <div class="achievements" v-for="(post, index) in content.posts" :key="index">
+                <ul>
+                  <li><h1>{{ post.title }}</h1></li>
+                </ul>
+              <!-- <div class="blg-posts">
                 <div class="blg-post">
                   <img src="http://via.placeholder.com/50x50" alt="">
                   <div class="blg-info">
@@ -47,10 +48,11 @@
                     <span>Jan 30 2016 | by <a href="#" title="">David James</a></span>
                   </div>
                 </div>
-              </div><!--blg-posts end-->
-            </div><!--widget-posts end-->
+              </div> -->
+              </div>
+            </div>
           </div>
-          <div class="col-lg-3 col-md-6 col-sm-12 col-12">
+          <!-- <div class="col-lg-3 col-md-6 col-sm-12 col-12">
             <div class="widget widget-instagram">
               <h3 class="widget-title">Instagram</h3>
               <ul>
@@ -61,8 +63,8 @@
                 <li><a href="#" title=""><img src="http://via.placeholder.com/85x85" alt=""></a></li>
                 <li><a href="#" title=""><img src="http://via.placeholder.com/85x85" alt=""></a></li>
               </ul>
-            </div><!--widget-instagram end-->
-          </div>
+            </div>
+          </div> -->
         </div>
       </div><!-- footer-data end-->
     </div>
@@ -86,9 +88,39 @@
 </template>
 
 <script setup>
+import { useRoute, useRouter } from "vue-router";
+import {onMounted, ref, watch} from "vue";
+import axiosClient from "@/axios";
 
+const route = useRoute();
+const content = ref("");
+const title = ref("");
+onMounted(() => {
+  fetch();
+});
+watch(
+    () => route.params.slug,
+    (newVal, oldVal) => {
+      fetch();
+    }
+);
+const fetch = async () => {
+  let slug = route.params.slug;
+  try {
+    const response = await axiosClient.get(`/achievements`);
+    content.value = JSON.parse(JSON.stringify(response.data.data));
+    title.value = content.value[0].name;
+    content.value = content.value[0];
+  } catch (e) {
+
+  }
+}
 </script>
 
 <style scoped>
 
+.achievements{
+  color: white;
+  margin-top: 18px;
+}
 </style>

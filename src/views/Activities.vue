@@ -1,104 +1,119 @@
 <template>
+  <div>
   <section class="pager-sec">
     <div class="container">
       <div class="pager-pag">
         <h3>ACTIVITIES</h3>
+        <h4>{{ title }}</h4>
       </div><!--pager-pag end-->
     </div>
   </section><!--pager-sec end-->
-  <section class="block6">
+  <section class="block5">
     <div class="container">
-      <div class="blog-post-page">
+      <div class="blog-posts no-mg">
         <div class="row">
-          <div class="col-lg-9">
-            <div class="posts-page">
-              <div class="post-blog" v-for="(post, index) in content.posts" :key="index">              
-                <h3 class="post-title">{{ post.title }}</h3>									
-                <div class="blog-post-info" v-html="post.content">
-                </div><!--blog-post-info end-->
-              </div><!--post-blog end-->
-            </div><!--posts-page end-->
+        <template v-for="(post, index) in posts" :key="index">
+          <div class="col-lg-4">
+            <div class="blog-post">
+              <div class="post-img">
+                <!-- <img src="" alt="" class="activity-img"> -->
+                <img :src="getImageUrl(post.media_galleries)" alt="" class="activity-img">
+                <router-link :to="{name: 'ActivityDetail', params: {school: school, slug: post.slug}}" :title="post.title"><i class="fa fa-plus"></i></router-link>
+                <span class="post-date"><i class="fa fa-picture-o"></i>{{ post.published_at }}</span>
+              </div><!--post-img end-->
+              <div class="post-info">
+                <h3><router-link :to="{name: 'ActivityDetail', params: {school: school, slug: post.slug}}" :title="post.title">{{ post.title }}</router-link></h3>
+                <p v-html="post.content"></p>
+                <router-link :to="{name: 'ActivityDetail', params: {school: school, slug: post.slug}}" :title="post.title">Read More</router-link>
+              </div><!--post-info end-->
+            </div><!--blog-post end-->
           </div>
-          <div class="col-lg-3">
-            <div class="right-sidebar">
-              <div class="widget widget-categories">
-                <h3 class="widget-title">Academics</h3>
-                <ul>
-                  <li><router-link :to="{name: 'Academics', params: {slug: 'rules-and-regulations'}}" title="Rules and Regulations">Rules and Regulations</router-link></li>
-                  <li><router-link :to="{name: 'Academics', params: {slug: 'news-room'}}" title="News Room">News Room</router-link></li>
-                  <li><router-link :to="{name: 'Academics', params: {slug: 'bus-routes'}}" title="Bus Routes">Bus Routes</router-link></li>
-                  <li><router-link :to="{name: 'Academics', params: {slug: 'time-tables'}}" title="Time Tables">Time Tables</router-link></li>
-                  <li><router-link :to="{name: 'Academics', params: {slug: 'school-timings'}}" title="School Timings">School Timings</router-link></li>
-                  <li><router-link :to="{name: 'Academics', params: {slug: 'mandatory-disclosures'}}" title="Mandatory Disclosures">Mandatory Disclosures</router-link></li>
-                </ul>
-              </div><!--widget-categories end-->
-              <div class="widget widget-posts">
-                  <h3 class="widget-title">Recent Announcements</h3>
-                  <div class="blg-posts">
-                    <div class="blg-post">
-                      <img src="http://via.placeholder.com/50x50" alt="">
-                      <div class="blg-info">
-                        <h3>Story Time</h3>
-                        <span>May 13 2016 | by <a href="#" title="">admin</a></span>
-                        <p>Elipsis magna a terminal nulla elementum morbi elite forte maecenas...</p>
-                      </div>
-                    </div><!--blg-post end-->
-                    <div class="blg-post">
-                      <img src="http://via.placeholder.com/50x50" alt="">
-                      <div class="blg-info">
-                        <h3>Reading Lessons</h3>
-                        <span>May 13 2016 | by <a href="#" title="">admin</a></span>
-                        <p>Elipsis magna a terminal nulla elementum morbi elite forte maecenas...</p>
-                      </div>
-                    </div><!--blg-post end-->
-                    <div class="blg-post">
-                      <img src="http://via.placeholder.com/50x50" alt="">
-                      <div class="blg-info">
-                        <h3>Education Through Play</h3>
-                        <span>May 13 2016 | by <a href="#" title="">admin</a></span>
-                        <p>Elipsis magna a terminal nulla elementum morbi elite forte maecenas...</p>
-                      </div>
-                    </div><!--blg-post end-->
-                  </div><!--blg-posts end-->
-                </div><!--widget-posts end-->
-            </div><!--right-sidebar end-->
-          </div>
+        </template>
         </div>
-      </div><!--blog_post end-->
+      </div><!--blog-posts end-->
     </div>
   </section>
+</div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
 import {onMounted, ref, watch} from "vue";
 import axiosClient from "@/axios";
 
 const route = useRoute();
+const error = ref(null);
 const content = ref("");
 const title = ref("");
-onMounted(() => {
-  fetch();
-});
+const posts = ref([]);
+const school = ref("");
+
+
 watch(
-    () => route.params.slug,
+    () => route.params.school,
     (newVal, oldVal) => {
       fetch();
     }
 );
 const fetch = async () => {
-  let school = route.params.school;
+  school.value = route.params.school;
   try {
-    const response = await axiosClient.get(`/activities/${school}`);
-    content.value = JSON.parse(JSON.stringify(response.data.data));
-    title.value = content.value[0].name;
-    content.value = content.value[0];
+    const response = await axiosClient.get(`/activities/${school.value}`);
+    content.value = response.data.data;
+    //console.log(response)
+    title.value = response.data.school;
+    posts.value = response.data.posts;
+    posts.value.forEach(post => {
+      post.media_galleries = JSON.parse(post.media_galleries || "[]").map(image => {
+        if (import.meta.env.DEV) {
+          return `${import.meta.env.VITE_API_BASE_URL}/storage/${image}`;
+        }
+        // Production (EC2 + S3)
+        return `${import.meta.env.VITE_S3_BASE_URL}/${image}`;
+      });
+    });
   } catch (e) {
 
+    error.value = "Failed to load activity.";
+    console.error(e);
   }
-}
+};
+const getImageUrl = (mediaGalleries) => {
+  if (!mediaGalleries || mediaGalleries.length === 0) {
+    return "http://via.placeholder.com/369x375"; 
+  }
+  const mediaArray = typeof mediaGalleries === "string" ? JSON.parse(mediaGalleries) : mediaGalleries;
+
+  if (mediaArray.length > 0) {
+    const imagePath = mediaArray[0];
+    if (import.meta.env.DEV) {
+      return `${import.meta.env.VITE_API_BASE_URL}/storage/${imagePath}`;
+    }
+    // Production (EC2 + S3)
+    return `${import.meta.env.VITE_S3_BASE_URL}/${imagePath}`;
+  }
+  return "http://via.placeholder.com/369x375"; 
+};
+
+onMounted(() => {
+  fetch();
+});
 </script>
 
 <style scoped>
+.post-img {
+  display: grid;
+  gap: 10px;
+  margin-top: 20px; 
+  background-color: rgb(228, 228, 236);
+}
+
+.post-img img {
+  width: 100%;
+  height: 300px; 
+  object-fit: cover; 
+  border-radius: 8px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
 
 </style>

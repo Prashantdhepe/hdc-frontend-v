@@ -9,138 +9,89 @@
         <div class="row">
           <div class="col-lg-6">
             <div class="bld-text">
-              <p>Elipsis magna a terminal nulla elementum morbi elite forte maecenas est magna vehicula est node maecenas. Praesent arcu gravida vehicula est node maecenas loareet morbi a dosis luctus. Urna eget lacinia eleifend praesent luctus a arcu quis facilisis venenatis. </p>
-            </div><!--bld-texte end-->
+              <!-- <p>Elipsis magna a terminal nulla elementum morbi elite forte maecenas est magna vehicula est node maecenas. Praesent arcu gravida vehicula est node maecenas loareet morbi a dosis luctus. Urna eget lacinia eleifend praesent luctus a arcu quis facilisis venenatis. </p> -->
+            </div>
           </div>
           <div class="col-lg-6">
             <div class="blc-text">
-              <p>Elipsis magna a terminal nulla elementum morbi elite forte maecenas est magna vehicula est node maecenas. Praesent arcu gravida vehicula est node maecenas loareet morbi a dosis luctus. Urna eget lacinia eleifend praesent luctus a arcu quis facilisis venenatis. Elipsis magna a terminal nulla elementum morbi elite forte maecenas est magna vehicula est node maecenas. </p>
-            </div><!--blc-text end-->
+              <!-- <p>Elipsis magna a terminal nulla elementum morbi elite forte maecenas est magna vehicula est node maecenas. Praesent arcu gravida vehicula est node maecenas loareet morbi a dosis luctus. Urna eget lacinia eleifend praesent luctus a arcu quis facilisis venenatis. Elipsis magna a terminal nulla elementum morbi elite forte maecenas est magna vehicula est node maecenas. </p> -->
+            </div>
           </div>
         </div>
-      </div><!--cls-texte end-->
+      </div>
       <div class="more-services">
         <div class="row">
-          <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+          <div 
+            class="col-lg-6 col-md-6 col-sm-12 col-12"
+            v-for="standard in standards" :key="standard.id"
+          >
             <div class="services_details">
               <div class="row">
                 <div class="col-lg-6">
                   <div class="srvc-img">
-                    <img src="http://via.placeholder.com/270x202" alt="">
+                    <template v-for="(image_path, index) in standard.image" :key="index">
+                      <img :src="getImageUrl(image_path)" alt="">
+                    </template>
                     <div class="specs-fig">
                       <ul>
-                        <li>
-                          <h3>12-24 <br/> Months Old</h3>
+                        <li v-if="standard.std">
+                          <h3>{{ standard.std }}-{{ standard.section_name }}<br/>Standard</h3>
                         </li>
-                        <li>
-                          <h3>12 <br/> Class Size</h3>
+                      
+                        <li v-if="standard.strength">
+                          <h3>{{ standard.strength }}<br/> Class Size</h3>
                         </li>
                       </ul>
-                    </div><!--specs-fig end-->
+                    </div>
                   </div>
                 </div>
                 <div class="col-lg-6">
                   <div class="srv_det">
-                    <h3>Pre-School Classes</h3>
-                    <p>Elipsis magna a terminal nulla elementum morbi elite forte maecenas est magna.</p>
-                    <a href="#" title="">More Info</a>
-                  </div><!--srv_det end-->
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-            <div class="services_details">
-              <div class="row">
-                <div class="col-lg-6">
-                  <div class="srvc-img">
-                    <img src="http://via.placeholder.com/270x202" alt="">
-                    <div class="specs-fig">
-                      <ul>
-                        <li>
-                          <h3>12-24 <br/> Months Old</h3>
-                        </li>
-                        <li>
-                          <h3>12 <br/> Class Size</h3>
-                        </li>
-                      </ul>
-                    </div><!--specs-fig end-->
+                    <h3>{{ standard.school_type }}</h3>
+                    <!-- <p>{{ standard.description }}</p> -->
                   </div>
                 </div>
-                <div class="col-lg-6">
-                  <div class="srv_det">
-                    <h3>Pre-School Classes</h3>
-                    <p>Elipsis magna a terminal nulla elementum morbi elite forte maecenas est magna.</p>
-                    <a href="#" title="">More Info</a>
-                  </div><!--srv_det end-->
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-            <div class="services_details">
-              <div class="row">
-                <div class="col-lg-6">
-                  <div class="srvc-img">
-                    <img src="http://via.placeholder.com/270x202" alt="">
-                    <div class="specs-fig">
-                      <ul>
-                        <li>
-                          <h3>12-24 <br/> Months Old</h3>
-                        </li>
-                        <li>
-                          <h3>12 <br/> Class Size</h3>
-                        </li>
-                      </ul>
-                    </div><!--specs-fig end-->
-                  </div>
-                </div>
-                <div class="col-lg-6">
-                  <div class="srv_det">
-                    <h3>Pre-School Classes</h3>
-                    <p>Elipsis magna a terminal nulla elementum morbi elite forte maecenas est magna.</p>
-                    <a href="#" title="">More Info</a>
-                  </div><!--srv_det end-->
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-            <div class="services_details">
-              <div class="row">
-                <div class="col-lg-6">
-                  <div class="srvc-img">
-                    <img src="http://via.placeholder.com/270x202" alt="">
-                    <div class="specs-fig">
-                      <ul>
-                        <li>
-                          <h3>12-24 <br/> Months Old</h3>
-                        </li>
-                        <li>
-                          <h3>12 <br/> Class Size</h3>
-                        </li>
-                      </ul>
-                    </div><!--specs-fig end-->
-                  </div>
-                </div>
-                <div class="col-lg-6">
-                  <div class="srv_det">
-                    <h3>Pre-School Classes</h3>
-                    <p>Elipsis magna a terminal nulla elementum morbi elite forte maecenas est magna.</p>
-                    <a href="#" title="">More Info</a>
-                  </div><!--srv_det end-->
-                </div>
+
               </div>
             </div>
           </div>
         </div>
-      </div><!--more-services end-->
+      </div>
+<!--more-services end-->
     </div>
   </section>
 </template>
 
 <script setup>
+import { onMounted, ref } from 'vue';
+import axiosClient from '@/axios';
+const standards = ref([]);
 
+const fetchStandard = async() => {
+  try{
+    const response = await axiosClient.get("/standards");
+    standards.value = response.data.data;
+  }
+  catch(err){
+    err.value = "Failed to Load Standards";
+    console.log(err);
+  }
+}
+
+
+const getImageUrl = (image) => {
+  if (!image) {
+    return "http://via.placeholder.com/369x375"; 
+  }
+  if (import.meta.env.DEV) {
+    return `${import.meta.env.VITE_API_BASE_URL}/storage/${image}`;
+  }
+  // Production (EC2 + S3)
+  return `${import.meta.env.VITE_S3_BASE_URL}/${image}`;
+};
+onMounted(() =>{
+  fetchStandard();
+})
 </script>
 
 <style scoped>

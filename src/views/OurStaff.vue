@@ -22,7 +22,7 @@
                       <h3><a href="javascript:;" :title="sta.school_type.name">{{ sta.school_type.name }}</a></h3>
                       <span>{{ sta.teaching_as!=null ? sta.teaching_as : sta.staff_type.name }}</span>
                       <span>{{ sta.qualification }}</span>
-                      <img :src="sta.photo_url" :alt="sta.name" class="staff-avatar ">                      
+                      <img :src="getImageUrl(sta.photo_url)" :alt="sta.name" class="staff-avatar ">                      
                     </div>
                   </div>
                 </template>
@@ -53,6 +53,17 @@ watch(
       fetch();
     }
 );
+
+const getImageUrl = (photoPath) => {
+  if (!photoPath) {
+    return "http://via.placeholder.com/369x375"; 
+  }
+  if (import.meta.env.DEV) {
+    return `${import.meta.env.VITE_API_BASE_URL}/storage/${photoPath}`;
+  }
+  // Production (EC2 + S3)
+  return `${import.meta.env.VITE_S3_BASE_URL}/${photoPath}`;
+};
 
 const fetch = async () => {
   try {

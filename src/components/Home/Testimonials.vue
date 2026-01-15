@@ -4,59 +4,60 @@
     <div class="container">
       <div class="heading st2">
         <h3>What The Parents Say</h3>
-      </div><!--heading end-->
-      <div class="testimonial-carousel">
-        <div class="testi-comment" v-for="(item, index) in items" :key="index">
-          
-          <p>{{ item.testimonial }}</p>
-          <div class="client-info">
-            <h3>{{ item.name }}</h3>
-            <h4>{{ item.location }}</h4>
-            
-          </div><!--client-info end-->
-        </div><!--testi-comment end-->
-      </div><!--testimonial-carousel end-->
+      </div>
+
+      <Swiper
+        v-if="testimonials.length"
+        :key="testimonials.length"
+        :modules="[Autoplay, Pagination]"
+        :slides-per-view="1"
+        :loop="true"
+        :autoplay="{ delay: 1000, disableOnInteraction: false }"
+        :pagination="{ clickable: true }"
+        class="testimonial-carousel"
+      >
+        <SwiperSlide
+          v-for="testimonial in testimonials"
+          :key="testimonial.id"
+        >
+          <div class="testi-comment">
+            <p>{{ testimonial.testimonial }}</p>
+            <div class="client-info">
+              <h3>{{ testimonial.name }}</h3>
+              <h4>{{ testimonial.location }}</h4>
+              <ul>
+                <li v-for="star in 5" :key="star">
+                  <i class="fa fa-star"></i>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </SwiperSlide>
+      </Swiper>
     </div>
   </section>
 </template>
 
 <script setup>
-import { useRoute, useRouter } from "vue-router";
-import {onMounted, ref, watch} from "vue";
-import axiosClient from "@/axios";
+import { onMounted, ref } from 'vue';
+import axiosClient from '@/axios';
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import { Autoplay, Pagination } from 'swiper/modules';
 
-const route = useRoute();
-const items = ref("");
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/autoplay';
 
-onMounted(() => {
-  fetch();
-});
+const testimonials = ref([]);
 
-const fetch = async () => {
+const fetchTestimonial = async () => {
   try {
-    const response = await axiosClient.get(`/testimonials`);
-    items.value = JSON.parse(JSON.stringify(response.data));  
-
-    // =================== TESTIMONIAL SLIDER ===============
-    
-    jQuery('.testimonial-carousel').slick({
-        slidesToShow: 1,
-        slck:true,
-        slidesToScroll: 1,
-        prevArrow:'<span class="slick-previous"></span>',
-        nextArrow:'<span class="slick-nexti"></span>',
-        autoplay: true,
-        dots: false,
-        autoplaySpeed: 2000
-    });
-    
-  } catch (e) {
-
+    const response = await axiosClient.get('/testimonials');
+    testimonials.value = Array.isArray(response.data) ? response.data : [];
+  } catch (err) {
+    console.error('Failed to Load Testimonials', err);
   }
+};
 
-}
+onMounted(fetchTestimonial);
 </script>
-
-<style scoped>
-
-</style>

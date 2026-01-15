@@ -1,14 +1,12 @@
 <template>
-    <div>
-      <section class="pager-sec">
-        <div class="container">
-          <div class="pager-pag">
-            <h3>Announcements</h3>
-          </div>
+    <section class="pager-sec">
+      <div class="container">
+        <div class="pager-pag">
+          <h3>Events</h3> 
         </div>
-      </section>
-  
-      <section class="block6">
+      </div>
+    </section>
+    <section class="block6">
         <div class="container">
           <div class="blog-post-page">
             <div class="row">
@@ -19,39 +17,39 @@
                     <i class="fa fa-spinner fa-spin"></i> Loading...
                   </div>
   
-                  <!-- Announcements List -->
-                  <div v-else-if="announcements.length > 0">
+                  <!-- events List -->
+                  <div v-else-if="eventdetails">
                     <div
-                      v-for="announcement in announcements"
-                      :key="announcement.id"
+                      
                       class="post-blog border rounded-md shadow-md p-4 mb-4"
                     >
                       <h3 class="post-title">
                         <i class="fa fa-thumb-tack"></i>
-                        {{ announcement.school_type }}
+                        {{ eventdetails.school_type }}
                       </h3>
                       <span class="post-date">
                         <i class="fa fa-bullhorn"></i>
-                        {{ formatDate(announcement.start_date) }} - {{ formatDate(announcement.end_date) }}
+                        {{ formatDate(eventdetails.start_date) }} - {{ formatDate(eventdetails.end_date) }}
                       </span>
                       <div class="blog-post-info mt-2">
                         <ul class="post-tg">
                             <li class="ad-author">
                                 <span>By</span>
-                                <a href="#" title="user-name" class="ad-name m-1">{{ announcement.user?.name || 'Unknown User' }}</a>
+                                <a href="#" title="user-name" class="ad-name m-1">{{ eventdetails.user?.name || 'Unknown User' }}</a>
                             </li>
                             <li>
                                 <i class="fa fa-sitemap"></i>
-                                <a href="#" title="">{{ announcement.school_type }}</a>
+                                <a href="#" title="">{{ eventdetails.school_type }}</a>
                             </li>
                         </ul>
-                        <p class="text-gray-700">{{ announcement.content }}</p>
+                        <!-- <p class="text-gray-700">{{ eventdetails.description }}</p> -->
+                        <p class="text-gray-700" v-html="eventdetails.description"></p>
                       </div>
                     </div>
                   </div>
   
-                  <!-- No Announcements Message -->
-                  <div v-else class="text-gray-500">No announcements found.</div>
+                  <!-- No events Message -->
+                  <div v-else class="text-gray-500">No events found.</div>
                 </div>
               </div>
   
@@ -69,23 +67,24 @@
                             <li><router-link :to="{name: 'Academics', params: {slug: 'mandatory-disclosures'}}" title="Mandatory Disclosures">Mandatory Disclosures</router-link></li>
                         </ul>
                   </div>
-  
+
                   <div class="widget widget-posts">
-                    <h3 class="widget-title">Recent Announcements</h3>
+                    <h3 class="widget-title">Upcoming Events</h3>
                     <!-- <div class="blg-posts"> -->
-                    <div class="blg-posts" v-if="recentAnnouncements.length > 0">
-                      <div class="blg-post" v-for="announcement in recentAnnouncements" :key="announcement.id">
+                    <div class="blg-posts" v-if="upcomingEvents.length > 0">
+                      <div class="blg-post" v-for="event in upcomingEvents" :key="event.id">
                         <div class="blg-info">
-                          <h3>{{ announcement.school_type }}</h3>
-                          <span>{{ formatDate(announcement.published_at) }} | by 
-                            <a href="#" title="Author">{{ announcement.user?.name || 'Unknown' }}</a>
+                          <h3>{{ event.school_type }}</h3>
+                          <span>{{ formatDate(event.start_date) }} | by 
+                            <a href="#" title="Author">{{ event.user?.name || 'Unknown' }}</a>
                           </span>
-                          <p>{{ announcement.content.substring(0, 50) }}...</p>
+                          <p>{{ event.description.substring(0, 50) }}...</p>
                         </div>
                       </div>
                     </div>
+                    
                     <div v-else>
-                      <p>No Recent Announcements...</p>
+                      <p>No Upcoming Events...</p>
                     </div>
                   </div>
 
@@ -96,32 +95,63 @@
           </div>
         </div>
       </section>
-    </div>
-  </template>
+</template>
+<script setup>
+import { onMounted, ref } from "vue";
+import axiosClient from "@/axios";
+import { useRoute, useRouter } from "vue-router";
+
+const route = useRoute();
   
-  <script setup>
-  import { onMounted, ref } from "vue";
-  import axiosClient from "@/axios";
-  import Vue3Marquee from 'vue3-marquee'
-  
-  const announcements = ref(null);
-  const recentAnnouncements = ref([]);
-  const loading = ref(true);
-  const error = ref(null);
-  
-  const fetchAnnouncements = async () => {
-    try {
-      const response = await axiosClient.get("/announcements");
-      console.log("API Response:", response.data);
-      announcements.value = response.data.data;
-      recentAnnouncements.value = response.data.data.slice(0, 3);
-    } catch (err) {
-      error.value = "Failed to load announcements.";
-      console.error(err);
-    } finally {
-      loading.value = false;
+const eventdetails = ref(null);
+const upcomingEvents = ref([]);
+const events = ref([]);
+const loading = ref(true);
+const error = ref(null);
+
+const fetcheventdetails = async () => {
+  try {
+    const response = await axiosClient.get(`/events/${route.params.id}`);
+    eventdetails.value = response.data.data;
+
+    if (eventdetails.value.user_id) {
+      eventdetails.value.user = { name: await fetchUser(eventdetails.value.user_id) };
     }
-  };
+    // upcomingEvents.value = response.data.data.slice(0, 3);
+  } catch (err) {
+    error.value = "Failed to load events.";
+    console.error(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const fetchUpcomingEvents = async () => {
+  try {
+    const response = await axiosClient.get("/events");
+    
+    if (response.data && response.data.data) {
+      const currentDate = new Date();
+      let upcomingEventsData = response.data.data.filter(event => 
+        new Date(event.start_date) > currentDate
+      ).slice(0, 3);
+
+      for (let event of upcomingEventsData) {
+        if (!event.user && event.user_id) {
+          event.user = { name: await fetchUser(event.user_id) };
+        }
+      }
+      upcomingEvents.value = upcomingEventsData;
+    } else {
+      upcomingEvents.value = [];
+    }
+    console.log("Upcoming Events:", upcomingEvents.value);
+   
+  } catch (err) {
+    console.error("Error fetching upcoming events:", err);
+    upcomingEvents.value = [];
+  }
+};
 
 const fetchUser = async (userId) => {
   try {
@@ -133,34 +163,14 @@ const fetchUser = async (userId) => {
   }
 };
   
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString();
-  };
+const formatDate = (dateString) => {
+  if (!dateString) return "N/A";
+  return new Date(dateString).toLocaleDateString();
+};
   
-//   onMounted(fetchAnnouncements);
   
-onMounted(async () => {
-  await fetchAnnouncements();
-  if (announcements.value && announcements.value.length > 0) {
-    for (let announcement of announcements.value) {
-      if (announcement.user_id) {
-        announcement.user = { name: await fetchUser(announcement.user_id) };
-      }
-    }
-  }
+onMounted( () => {
+  fetcheventdetails();
+  fetchUpcomingEvents();
 });
-  </script>
-  
-<style scoped>
-
-.post-title {
-    font-size: 18px;
-    font-weight: bold;
-    color: #333;
-}
-
-.blog-post-info p {
-    margin-top: 10px;
-}
-</style>
+</script>
