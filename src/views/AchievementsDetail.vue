@@ -192,7 +192,7 @@ const fetch = async () => {
       }
 
       post.value.media_galleries = post.value.media_galleries?.map((image) => {
-        return `${import.meta.env.VITE_API_BASE_URL}/storage/${image}`;
+        return processImageUrl(image);
       });
     } else {
       console.error("Post not found");
@@ -206,6 +206,17 @@ const fetch = async () => {
 
 const getImageUrl = (image) => {
   return image; 
+};
+
+const processImageUrl = (imagePath) => {
+  if (!imagePath) {
+    return "http://via.placeholder.com/369x375";
+  }
+  if (import.meta.env.DEV) {
+    return `${import.meta.env.VITE_API_BASE_URL}/storage/${imagePath}`;
+  }
+  // Production (EC2 + S3)
+  return `${import.meta.env.VITE_S3_BASE_URL}/${imagePath}`;
 };
 
 const openImageDialog = (image) => {
