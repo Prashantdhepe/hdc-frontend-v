@@ -4,7 +4,7 @@
     <div class="heading st2">
       <h3>Gallery</h3>
     </div><!--heading end-->
-    <div class="masonary no-pd">
+    <!-- <div class="masonary no-pd">
     <div class="row">
       <div class="col-lg-12 col-md-12 col-sm-12 col-12">
         <Swiper
@@ -36,7 +36,28 @@
         </Swiper>
       </div>
     </div>
-  </div>
+  </div> -->
+  <div class="gallery-wrapper">
+  <Swiper
+    v-if="flattenedImages.length"
+    :modules="[Autoplay, Pagination]"
+    :slides-per-view="4"
+    :space-between="20"
+    :loop="true"
+    :autoplay="{ delay: 5000, disableOnInteraction: false }"
+    class="mySwiper"
+  >
+    <SwiperSlide v-for="(img, index) in flattenedImages" :key="index">
+      <div class="gallery-ms">
+        <img :src="getImageUrl(img)" alt="Gallery Image" />
+        <a :href="getImageUrl(img)" class="html5lightbox">
+          <i class="fa fa-search"></i>
+        </a>
+      </div>
+    </SwiperSlide>
+  </Swiper>
+</div>
+
   <div class="full-gallery">
         <router-link :to="{name: 'gallery'}" title="">CLICK HERE TO VIEW OUR FULL GALLERY</router-link>
   </div>
@@ -44,7 +65,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, nextTick } from 'vue';
 import axiosClient from '@/axios';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/swiper-bundle.css';
@@ -80,15 +101,31 @@ const getImageUrl = (imagePath) => {
 
 
 onMounted(async () => {
-  fetchGalleries();
+  await fetchGalleries();
+  await nextTick();
 });
 </script>
 
 <style scoped>
+
+.mySwiper {
+  width: 100%;
+}
+
+.swiper-slide {
+  display: flex;
+}
+
+.gallery-ms {
+  width: 100%;
+  overflow: hidden;
+}
+
 .gallery-ms img {
   width: 100%;
   height: 300px;
   object-fit: cover;
-  display: block;
+  transform: none !important;
 }
+
 </style>

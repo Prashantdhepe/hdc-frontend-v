@@ -17,13 +17,13 @@
 
   <ClassroomFacilities />
 
-  <Results />
+  <!-- <Results /> -->
 
   <Testimonials />
 
   <OurClass />
 
-  <YourChildren />
+  <!-- <YourChildren /> -->
 
   <Gallery />
 

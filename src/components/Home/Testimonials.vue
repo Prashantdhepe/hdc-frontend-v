@@ -6,16 +6,20 @@
         <h3>What The Parents Say</h3>
       </div>
 
+      <div v-if="isLoading" style="text-align: center; padding: 40px;">
+        <p>Loading testimonials...</p>
+      </div>
+
       <Swiper
         v-if="testimonials.length"
-        :key="testimonials.length"
         :modules="[Autoplay, Pagination]"
         :slides-per-view="1"
-        :loop="true"
-        :autoplay="{ delay: 1000, disableOnInteraction: false }"
+        :loop="testimonials.length > 1"
+        :autoplay="{ delay: 3000, disableOnInteraction: false }"
         :pagination="{ clickable: true }"
         class="testimonial-carousel"
       >
+
         <SwiperSlide
           v-for="testimonial in testimonials"
           :key="testimonial.id"
@@ -39,7 +43,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref,nextTick } from 'vue';
 import axiosClient from '@/axios';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Autoplay, Pagination } from 'swiper/modules';
@@ -49,15 +53,24 @@ import 'swiper/css/pagination';
 import 'swiper/css/autoplay';
 
 const testimonials = ref([]);
+const isLoading = ref(true);
 
 const fetchTestimonial = async () => {
   try {
+    isLoading.value = true;
     const response = await axiosClient.get('/testimonials');
     testimonials.value = Array.isArray(response.data) ? response.data : [];
+    console.log('Testimonials loaded:', testimonials.value.length);
   } catch (err) {
     console.error('Failed to Load Testimonials', err);
+    testimonials.value = [];
+  } finally {
+    isLoading.value = false;
   }
 };
 
-onMounted(fetchTestimonial);
+onMounted(async() => {
+  await fetchTestimonial();
+  await nextTick();
+});
 </script>
