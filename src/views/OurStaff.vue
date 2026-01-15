@@ -22,7 +22,7 @@
                       <h3><a href="javascript:;" :title="sta.school_type.name">{{ sta.school_type.name }}</a></h3>
                       <span>{{ sta.teaching_as!=null ? sta.teaching_as : sta.staff_type.name }}</span>
                       <span>{{ sta.qualification }}</span>
-                      <img :src="getImageUrl(sta.photo_url)" :alt="sta.name" class="staff-avatar ">                      
+                      <img :src="getImageUrl(sta.photo)" :alt="sta.name" class="staff-avatar ">                      
                     </div>
                   </div>
                 </template>
@@ -54,15 +54,15 @@ watch(
     }
 );
 
-const getImageUrl = (photoPath) => {
-  if (!photoPath) {
+const getImageUrl = (photo) => {
+  if (!photo) {
     return "http://via.placeholder.com/369x375"; 
   }
   if (import.meta.env.DEV) {
-    return `${import.meta.env.VITE_API_BASE_URL}/storage/${photoPath}`;
+    return `${import.meta.env.VITE_API_BASE_URL}/storage/${photo}`;
   }
   // Production (EC2 + S3)
-  return `${import.meta.env.VITE_S3_BASE_URL}/${photoPath}`;
+  return `${import.meta.env.VITE_S3_BASE_URL}/${photo}`;
 };
 
 const fetch = async () => {
@@ -77,5 +77,18 @@ const fetch = async () => {
 </script>
 
 <style scoped>
+.tch-team {
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  border-radius: 8px;
+  background: #f9f9f9;
+}
 
 </style>

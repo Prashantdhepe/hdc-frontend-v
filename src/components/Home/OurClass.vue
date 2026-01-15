@@ -95,5 +95,7 @@ onMounted(() =>{
 </script>
 
 <style scoped>
-
+.srv_set{
+  	height: 202px;
+}
 </style>
