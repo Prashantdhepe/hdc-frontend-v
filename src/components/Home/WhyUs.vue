@@ -12,7 +12,7 @@
           </div>
           <div class="col-lg-6">
             <div class="cms-abt-img">
-              <img src="/assets/images/hdc_logo.jpeg" alt="" style="height: 250px; margin-bottom: 25px" >
+              <img src="/assets/images/hdc-logo.png" alt="" style="height: 250px; margin-bottom: 25px" >
             </div><!--cms-abt-img end-->
           </div>
         </div>
