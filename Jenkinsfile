@@ -166,6 +166,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = "prashantdhepe/hdc-frontend"
+        IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
     stages {
@@ -202,7 +203,7 @@ pipeline {
         stage('Push Image') {
             steps {
                 bat """
-                    docker push %IMAGE_NAME%:%BUILD_NUMBER%
+                    docker push %IMAGE_NAME%:%IMAGE_TAG%
                     docker push %IMAGE_NAME%:latest
                 """
             }
@@ -212,6 +213,7 @@ pipeline {
             steps {
                 bat '''
                     kubectl apply -f k8s/frontend/
+                    kubectl rollout restart deployment hdc-frontend
                 '''
             }
         }
