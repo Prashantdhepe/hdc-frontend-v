@@ -4,7 +4,7 @@ import router from './router';
 
 
 let axiosClient = axios.create({
-    baseURL: `${import.meta.env.production.VITE_API_BASE_URL}/api/${import.meta.env.production.VITE_API_CURRENT_VERSION}`
+    baseURL: `${import.meta.env.VITE_API_BASE_URL}/api/${import.meta.env.VITE_API_CURRENT_VERSION}`
 });
 
 /*axiosClient.interceptors.request.use(config => {
